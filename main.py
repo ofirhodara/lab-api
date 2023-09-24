@@ -1,6 +1,5 @@
-
 from starlette.middleware.cors import CORSMiddleware
-
+from app.models.config_manager import ConfigurationManager
 from app.api.api_v1.api import api_router
 
 local_config = ConfigurationManager().get_config()
