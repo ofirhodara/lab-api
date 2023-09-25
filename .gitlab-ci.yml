@@ -1,7 +1,9 @@
 # Define the GitLab CI/CD pipeline stages
 stages:
+  - install_dependencies
   - test
   - build
+
 
 # Define job for testing
 test:
@@ -10,7 +12,15 @@ test:
     - pip install -r requirements.txt  # Install project dependencies
     - pytest                           # Run your tests using pytest
 
-# Define job for building Docker image and saving it locally
+install_dependencies:
+  stage: install_dependencies
+  script:
+    - pip3 install -r requirements.txt
+    - pip3 freeze > requirements.txt
+  artifacts:
+    paths:
+      - requirements.txt
+
 build:
   stage: build
   script:
@@ -21,3 +31,4 @@ build:
       - my-python-app.tar  # Archive the .tar file as a build artifact
   only:
     - main  # Only run this job on the 'master' branch
+
