@@ -124,3 +124,12 @@ pip-selfcheck.json
 
 # idea folder, uncomment if you don't need it
 .idea
+app/api/api_v2/endpoints/items.py
+
+app/api/api_v2/endpoints/login.py
+
+app/api/api_v2/endpoints/roles.py
+
+app/api/api_v2/endpoints/users.py
+
+app/api/api_v2/endpoints/utils.py
