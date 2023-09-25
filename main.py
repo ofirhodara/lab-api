@@ -5,7 +5,6 @@ from app.models.facade import Facade
 from fastapi import FastAPI
 
 
-
 def main():
     init_config = ConfigurationManager().get_config()
     app = FastAPI(title=init_config["project_name"])
