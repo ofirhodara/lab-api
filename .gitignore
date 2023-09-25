@@ -72,6 +72,11 @@ target/
 *.log
 app/logs/*
 
+
+*.csv
+app/data/*
+
+
 # IPython Notebook
 .ipynb_checkpoints
 
