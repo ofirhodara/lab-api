@@ -1,19 +1,18 @@
 from starlette.middleware.cors import CORSMiddleware
 from app.models.config_manager import ConfigurationManager
 from app.api.api_v1.api import api_router
+from app.models.facade import Facade
+from fastapi import FastAPI
 
-local_config = ConfigurationManager().get_config()
-app = FastAPI(title=local_config["project_name"])
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins="*",
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
-    allow_headers=["Authorization", "Content-Type"],
-)
 
-app.include_router(api_router, prefix=local_config["api"]["api_endpoint_str"])
+def main():
+    init_config = ConfigurationManager().get_config()
+    app = FastAPI(title=init_config["project_name"])
+    facade = Facade(config=init_config,
+                    app=app)
+    facade.run()
+
 
 if __name__ == '__main__':
-    print("ofir")
+    main()

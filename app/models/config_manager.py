@@ -4,7 +4,7 @@ from pathlib import Path
 import piny.errors as pe
 from piny import YamlLoader
 
-DEFAULT_CONFIG_PATH = Path("core/config/config.yaml")
+DEFAULT_CONFIG_PATH = Path("app/core/config.yml")
 
 
 class ConfigurationManager:

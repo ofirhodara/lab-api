@@ -1,0 +1,21 @@
+# Define the GitLab CI/CD pipeline stages
+stages:
+  - test
+  - build
+
+# Define job for testing
+test:
+  stage: test
+  script:
+    - pip install -r requirements.txt  # Install project dependencies
+    - pytest                           # Run your tests using pytest
+
+# Define job for building Docker image
+build:
+  stage: build
+  script:
+    - docker build -t my-python-app .  # Build the Docker image from the Dockerfile
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY  # Log in to GitLab Container Registry
+    - docker push $CI_REGISTRY_IMAGE  # Push the Docker image to the GitLab Container Registry
+  only:
+    - master  # Only run this job on the 'master' branch
