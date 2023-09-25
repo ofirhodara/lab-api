@@ -1,7 +1,7 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
-from app.models.config_manager import ConfigurationManager
+from app.managers.config_manager import ConfigurationManager
 
 
 def create_logger(module_name: str) -> logging.Logger:

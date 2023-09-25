@@ -1,23 +1,27 @@
-from app.core.data_sources.data_source import DataSource
+from abc import abstractmethod
+
+from elasticsearch import Elasticsearch
+
+from app.core.data_sources.data_source import IDataLabService
 
 
-class DbSource(DataSource):
-    def __init__(self, host, port, connection_str, *args, **kwargs):
+class DbSource(IDataLabService):
+    def __init__(self, host, port, *args, **kwargs):
         self.host = host
         self.port = port
-        self.connection_str = connection_str
 
-    @abstract_method
+    @abstractmethod
     def read_data(self, *args, **kwargs):
         raise NotImplementedError("Non implemented yet!")
 
 
 class ElasticSource(DbSource):
-    def __init__(self, index, host, port, connection_str, *args, **kwargs):
-        super().__init__(host, port, connection_str, *args, **kwargs)
-        self.index = index
+    def __init__(self, index_name, host, port=9200, *args, **kwargs):
+        super().__init__(host, port, *args, **kwargs)
+        self.index_name = index_name
+        self.es = Elasticsearch([{'host': self.host, 'port': self.port}])
 
     def read_data(self, *args, **kwargs):
         raise NotImplementedError("Non implemented yet!")
 
-# TODO: Redis, Elastic.....
+

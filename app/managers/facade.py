@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from app.api.api_v1.api import api_router
-from app.models.config_manager import ConfigurationManager
+from app.managers.config_manager import ConfigurationManager
 import uvicorn
 
-from app.models.logger_manager import create_logger
+from app.managers.logger_manager import create_logger
 
 logger = create_logger(__name__)
 

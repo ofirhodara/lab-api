@@ -1,7 +1,7 @@
 from starlette.middleware.cors import CORSMiddleware
-from app.models.config_manager import ConfigurationManager
+from app.managers.config_manager import ConfigurationManager
 from app.api.api_v1.api import api_router
-from app.models.facade import Facade
+from app.managers.facade import Facade
 from fastapi import FastAPI
 
 
