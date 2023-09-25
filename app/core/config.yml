@@ -1,12 +1,12 @@
-project_name: ${PROJECT_NAME:data-labs}
+project_name: ${PROJECT_NAME:-data-labs}
 
 api:
-  server_host: ${HOST:127.0.0.1}
-  port: ${PORT:8001}
-  api_endpoint_str:  ${API_STR:/api/v1}
+  server_host: ${HOST:-127.0.0.1}
+  port: ${PORT:-8001}
+  api_endpoint_str:  ${API_STR:-/api/v1}
 logging:
-  log_level:
-  filename: ${LOGS_FILENAME:-/app/logs/data_logs.log}
+  log_level: ${LOG_LEVEL:-INFO}
+  filename: ${LOGS_FILENAME:-./app/logs/data_logs.log}
   max_bytes: ${LOGS_BACKUP_COUNT:-10485760} # 10mb
   backup_count: ${LOGS_BACKUP_COUNT:-10}
   encoding: ${LOGS_BACKUP_ENCODING:-utf8}
