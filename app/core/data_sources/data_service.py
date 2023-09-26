@@ -3,8 +3,9 @@ from typing import Any
 
 from pydantic.main import BaseModel
 
+from app.core.serializer_methods.serialize_factory import SerializerFactory
 from app.core.lab.laboratory import LabDataItem
-from app.core.serializer_methods.serializer import IBaseSerializer
+from app.core.serializer_methods.serializer import IBaseSerializer, DataFormat
 from app.exceptions.lab_exceptions import SerializationError
 from app.managers.logger_manager import create_logger
 
@@ -33,12 +34,12 @@ class IDataLabService(ABC):
     _serializer: IBaseSerializer = ...
     _lab_target_class: LabDataItem = ...
 
-    def __init__(self, *, serializer, target_class):
-        self._serializer = serializer
+    def __init__(self, *, data_format: DataFormat, target_class):
         self._lab_target_class = target_class
+        self._serializer = SerializerFactory.create_parser(data_format)
 
     @abstractmethod
-    def read_data(self, *args, **kwargs) -> Any:
+    def _read_data(self, *args, **kwargs) -> Any:
         """Read and process data from a data source.
 
         Subclasses must implement this method to read data from a specific data source and process it.
@@ -48,7 +49,7 @@ class IDataLabService(ABC):
         """
         pass
 
-    def _process_data_format(self, raw_data):
+    def _process_data_format(self):
         """Process data using the specified serializer.
 
         This method uses the serializer to parse and process raw data.
@@ -60,7 +61,8 @@ class IDataLabService(ABC):
             SerializationError: If there is an error during serialization.
         """
         try:
-            self._data = self._serializer.parse(raw_data)
+            self._data = self._serializer.parse(data=self._data, target_class=self._lab_target_class)
+            logger.info(f"Data serialized successfully to target class {self._lab_target_class.__str__()}")
         except SerializationError as e:
             logger.error(e)
 
@@ -75,13 +77,6 @@ class IDataLabService(ABC):
 
     def parse_data(self):
         # read the data
-        pass
-
+        self._read_data()
         # process the data
-        pass
-
-        # build parser with factory
-        pass
-
-        # parse the data
-        pass
+        self._process_data_format()

@@ -1,9 +1,10 @@
-from plistlib import Dict
+from typing import Dict
 
 from result import Ok, Err
 
 from app.core.serializer_methods.models_serializeres import CsvSerializer, YamlSerializer
 from app.core.serializer_methods.serializer import DataFormat, IBaseSerializer
+from app.exceptions.lab_exceptions import SerializerFactoryError
 from app.managers.logger_manager import create_logger
 
 logger = create_logger(__name__)
@@ -18,7 +19,7 @@ class SerializerFactory:
     }
 
     @staticmethod
-    def create_parser(data_format: DataFormat):
+    def create_parser(data_format: DataFormat) -> IBaseSerializer:
         """Create a parser based on the data format.
 
         Args:
@@ -29,8 +30,8 @@ class SerializerFactory:
             Err: An Err result with an error message if the format is unsupported.
         """
         if data_format.value in SerializerFactory._mapper.keys():
-            return Ok(SerializerFactory._mapper[data_format.value])
+            return SerializerFactory._mapper[data_format.value]
 
-        e_message = f"Unsupported data format {data_format.value}"
+        e_message = f"Error Unsupported data format {data_format.value}"
         logger.error(e_message)
-        return Err(e_message)
+        raise SerializerFactoryError(e_message)

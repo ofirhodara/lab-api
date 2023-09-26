@@ -2,7 +2,7 @@ from abc import abstractmethod
 
 from elasticsearch import Elasticsearch
 
-from app.core.data_sources.data_source import IDataLabService
+from app.core.data_sources.data_service import IDataLabService
 
 
 class DbSource(IDataLabService):

@@ -3,7 +3,7 @@ from typing import Any
 
 from fastapi import UploadFile
 
-from app.core.data_sources.data_source import IDataLabService
+from app.core.data_sources.data_service import IDataLabService
 from app.core.lab.laboratory import LabDataItem
 from app.core.serializer_methods.serializer import IBaseSerializer
 from app.managers.logger_manager import create_logger

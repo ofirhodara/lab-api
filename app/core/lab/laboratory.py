@@ -39,7 +39,7 @@ class Laboratory(LabDataItem):
     ports: List[Port]
 
     @staticmethod
-    def get_lab_class_by_name(class_name: str) -> Generic:
+    def get_lab_class_by_name(class_name: str) -> Ok[BaseModel] | Err[str]:
         """Retrieve a class type based on its name.
 
         This static method allows you to retrieve a class type (Pydantic model) based on its name.
