@@ -41,5 +41,3 @@ class IBaseSerializer(ABC):
             Parsed data as an instance of target_class.
         """
         pass
-
-

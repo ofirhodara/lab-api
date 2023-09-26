@@ -38,7 +38,7 @@ def main():
         lab_class=lab_object
     )
     data_service.parse_data()
-    pass
+
 
 
     # app = FastAPI(title=init_config["project_name"])

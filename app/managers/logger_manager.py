@@ -1,5 +1,7 @@
 import logging
+import os
 from logging.handlers import RotatingFileHandler
+from pathlib import Path
 
 from app.managers.config_manager import ConfigurationManager
 
@@ -24,6 +26,9 @@ def create_logger(module_name: str) -> logging.Logger:
         >>> logger.info('This is an informational log message.')
 
     """
+
+
+    # TODO: Add try except on logger
     # Get the logging configuration from the ConfigurationManager
     config_logger = ConfigurationManager.get_instance().get_config()["logging"]
 
@@ -41,6 +46,8 @@ def create_logger(module_name: str) -> logging.Logger:
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(log_formatter)
     logger.addHandler(console_handler)
+
+    os.makedirs(Path(config_logger["filename"]).parent, exist_ok=True)
 
     # Create a file handler with log rotation based on configuration
     file_handler = RotatingFileHandler(

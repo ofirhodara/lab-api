@@ -13,6 +13,7 @@ from piny import YamlLoader
 
 DEFAULT_CONFIG_PATH = Path("app/config/config.yml")
 
+
 class ConfigurationManager:
     """
     The `ConfigurationManager` class manages application configuration settings.

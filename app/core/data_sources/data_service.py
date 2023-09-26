@@ -32,11 +32,8 @@ class IDataLabService(ABC):
 
     """
 
-    _data: Any = None
-    _serializer: IBaseSerializer = ...
-    _lab_target_class: LabDataItem = ...
-
     def __init__(self, *, data_format: DataFormat, target_class: LabDataItem):
+        self._data = None
         self._lab_target_class = target_class
         self._serializer = SerializerFactory.create_parser(data_format)
 
@@ -64,7 +61,6 @@ class IDataLabService(ABC):
         """
         try:
             self._data = self._serializer.serialize(data=self._data, target_class=self._lab_target_class)
-
             logger.info(f"Data serialized successfully to target class {str(self._lab_target_class)}")
 
         except SerializationError as e:

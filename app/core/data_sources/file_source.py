@@ -81,6 +81,7 @@ class ReadFileSource(IDataLabService):
         """
         super().__init__(target_class=lab_class, data_format=data_format)
         self.file_path = file_path
+        logger.info("yay")
 
     def _read_data(self) -> Any:
         """Read and process data from the file path.
