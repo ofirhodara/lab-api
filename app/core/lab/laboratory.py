@@ -1,17 +1,13 @@
+import importlib
 from typing import List, Dict, Generic
 
 from pydantic import BaseModel
 from result import Ok, Err
 
-from app.core.lab.items import Port, Card, Component
+from app.core.lab.items import Port, Card, Component, LabDataItem
 from app.managers.logger_manager import create_logger
 
 logger = create_logger(__name__)
-
-
-class LabDataItem(BaseModel):
-    pass
-
 
 class Laboratory(LabDataItem):
     """Represents a laboratory with components, cards, and ports.

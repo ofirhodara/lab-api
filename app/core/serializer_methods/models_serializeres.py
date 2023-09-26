@@ -1,3 +1,9 @@
+"""
+Module: serializers.py
+
+This module defines two serializers, YamlSerializer and CsvSerializer, that implement the IBaseSerializer interface.
+"""
+
 import csv
 from typing import Any
 
@@ -8,7 +14,21 @@ from app.core.serializer_methods.serializer import IBaseSerializer
 
 
 class YamlSerializer(IBaseSerializer):
-    def parse(self, data: Any, target_class: LabDataItem):
+    """
+    YamlSerializer class implements the IBaseSerializer interface for parsing YAML data into LabDataItem objects.
+    """
+
+    def serialize(self, data: Any, target_class: LabDataItem):
+        """
+        Parses YAML data and creates an instance of the target class.
+
+        Args:
+            data (Any): YAML data to be parsed.
+            target_class (LabDataItem): The class into which the data should be parsed.
+
+        Returns:
+            LabDataItem: An instance of the target_class with attributes set from the parsed data.
+        """
         parsed_data = yaml.safe_load(data)
         instance = target_class()
         for key, value in parsed_data.items():
@@ -17,7 +37,21 @@ class YamlSerializer(IBaseSerializer):
 
 
 class CsvSerializer(IBaseSerializer):
-    def parse(self, data, target_class):
+    """
+    CsvSerializer class implements the IBaseSerializer interface for parsing CSV data into a list of LabDataItem objects.
+    """
+
+    def serialize(self, data, target_class):
+        """
+        Parses CSV data and creates a list of instances of the target class.
+
+        Args:
+            data (str): CSV data (as a string) to be parsed.
+            target_class: The class into which each row of data should be parsed.
+
+        Returns:
+            list: A list of instances of the target_class, with attributes set from the parsed CSV data.
+        """
         rows = csv.DictReader(data.splitlines())  # Assumes data is a CSV string
         instance_list = []
 
@@ -25,6 +59,7 @@ class CsvSerializer(IBaseSerializer):
             instance = target_class()
             for key, value in row.items():
                 setattr(instance, key, value)
-            instance_list.append(instance)
 
+            instance_list.append(instance)
+        print(instance_list)
         return instance_list

@@ -1,30 +1,36 @@
-from typing import Dict, Any
-from result import Ok, Err
+import functools
 from abc import ABC, abstractmethod
-from enum import Enum
+from typing import Any
 
 from app.core.lab.laboratory import LabDataItem
+from app.exceptions.lab_exceptions import SerializationError
 from app.managers.logger_manager import create_logger
 
 logger = create_logger(__name__)
 
 
-class DataFormat(str, Enum):
-    """
-        Enumeration of data formats.
-        I inherited str also because a trouble with pydantic and enum evaluation.
-    """
-    JSON = "json"
-    XML = "xml"
-    CSV = "csv"
-    YAML = "yml"
+def handle_serialize_error(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+
+        except SerializationError as e:
+            logger.fatal(e)
+            raise e
+        except Exception as e:
+            logger.fatal(e)
+            raise e
+
+    return wrapper
 
 
 class IBaseSerializer(ABC):
     """Abstract base class for serializers."""
 
+    @handle_serialize_error
     @abstractmethod
-    def parse(self, data: Any, target_class: LabDataItem) -> any:
+    def serialize(self, data: Any, target_class: LabDataItem) -> any:
         """Parse data into target_class.
 
         Args:
@@ -35,3 +41,5 @@ class IBaseSerializer(ABC):
             Parsed data as an instance of target_class.
         """
         pass
+
+

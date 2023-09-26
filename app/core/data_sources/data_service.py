@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, List
 
 from pydantic.main import BaseModel
 
+from app.core.serializer_methods.data_formats import DataFormat
 from app.core.serializer_methods.serialize_factory import SerializerFactory
 from app.core.lab.laboratory import LabDataItem
-from app.core.serializer_methods.serializer import IBaseSerializer, DataFormat
+from app.core.serializer_methods.serializer import IBaseSerializer
+
 from app.exceptions.lab_exceptions import SerializationError
 from app.managers.logger_manager import create_logger
 
@@ -34,7 +36,7 @@ class IDataLabService(ABC):
     _serializer: IBaseSerializer = ...
     _lab_target_class: LabDataItem = ...
 
-    def __init__(self, *, data_format: DataFormat, target_class):
+    def __init__(self, *, data_format: DataFormat, target_class: LabDataItem):
         self._lab_target_class = target_class
         self._serializer = SerializerFactory.create_parser(data_format)
 
@@ -61,8 +63,10 @@ class IDataLabService(ABC):
             SerializationError: If there is an error during serialization.
         """
         try:
-            self._data = self._serializer.parse(data=self._data, target_class=self._lab_target_class)
-            logger.info(f"Data serialized successfully to target class {self._lab_target_class.__str__()}")
+            self._data = self._serializer.serialize(data=self._data, target_class=self._lab_target_class)
+
+            logger.info(f"Data serialized successfully to target class {str(self._lab_target_class)}")
+
         except SerializationError as e:
             logger.error(e)
 
@@ -76,7 +80,12 @@ class IDataLabService(ABC):
         return self._data
 
     def parse_data(self):
-        # read the data
-        self._read_data()
-        # process the data
-        self._process_data_format()
+        try:
+            # read the data
+            self._read_data()
+
+            # process the data
+            self._process_data_format()
+        except Exception as e:
+            logger.error(e)
+            raise e

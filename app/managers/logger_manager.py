@@ -25,7 +25,7 @@ def create_logger(module_name: str) -> logging.Logger:
 
     """
     # Get the logging configuration from the ConfigurationManager
-    config_logger = ConfigurationManager().get_config()["logging"]
+    config_logger = ConfigurationManager.get_instance().get_config()["logging"]
 
     # Create a logger with the specified module name
     logger = logging.getLogger(module_name)

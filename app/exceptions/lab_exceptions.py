@@ -1,5 +1,5 @@
 class SerializationError(Exception):
-    def __init__(self, message="Error during serialization"):
+    def __init__(self, message="Error during serialization process."):
         self.message = message
         super().__init__(self.message)
 

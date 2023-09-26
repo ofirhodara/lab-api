@@ -1,3 +1,4 @@
+from abc import ABC
 from pathlib import Path
 from typing import Any
 
@@ -5,6 +6,7 @@ from fastapi import UploadFile
 
 from app.core.data_sources.data_service import IDataLabService
 from app.core.lab.laboratory import LabDataItem
+from app.core.serializer_methods.data_formats import DataFormat
 from app.core.serializer_methods.serializer import IBaseSerializer
 from app.managers.logger_manager import create_logger
 
@@ -18,19 +20,18 @@ class FileSource(IDataLabService):
 
     Attributes:
         file (UploadFile): The uploaded file to read data from.
-        _serializer (IBaseSerializer): The serializer to use for parsing data.
+
 
     Methods:
         read_data: Read and process data from the uploaded file.
 
     """
 
-    def __init__(self, file: UploadFile, serializer: IBaseSerializer, lab_class: LabDataItem):
-        super().__init__(serializer=serializer, target_class=lab_class)
+    def __init__(self, file: UploadFile, data_format: DataFormat, lab_class: LabDataItem):
+        super().__init__(target_class=lab_class, data_format=data_format)
         self.file = file
-        self._serializer = serializer
 
-    def read_data(self, *args, **kwargs) -> Any:
+    def _read_data(self, *args, **kwargs) -> Any:
         """Read and process data from the uploaded file.
 
         This method reads data from the uploaded file, processes it using the specified serializer,
@@ -39,8 +40,19 @@ class FileSource(IDataLabService):
         Returns:
             Any: The processed data.
         """
-        # Read the data from the file into a string
-        self._data = self.file.read()
+
+        try:
+            # Read the data from the file into a string
+            self._data = self.file.read()
+
+        except IOError as e:
+            err_msg = f"IO Error while trying to open file from path {str(self.file)}"
+            logger.fatal(err_msg)
+            raise FileNotFoundError(err_msg)
+        except Exception as e:
+            err_msg = f"An error occurred: {e}"
+            logger.fatal(err_msg)
+            raise e
 
 
 class ReadFileSource(IDataLabService):
@@ -60,12 +72,17 @@ class ReadFileSource(IDataLabService):
 
     def __init__(self, *,
                  file_path: Path,
-                 serializer: IBaseSerializer,
-                 lab_class: LabDataItem, target_class):
-        super().__init__(serializer=serializer, target_class=target_class)
+                 data_format: DataFormat,
+                 lab_class: LabDataItem):
+        """
+
+        Returns:
+            object:
+        """
+        super().__init__(target_class=lab_class, data_format=data_format)
         self.file_path = file_path
 
-    def read_data(self, *args, **kwargs) -> Any:
+    def _read_data(self) -> Any:
         """Read and process data from the file path.
 
         This method is not implemented and raises a NotImplementedError.
@@ -73,4 +90,18 @@ class ReadFileSource(IDataLabService):
         Raises:
             NotImplementedError: This method is not implemented in this class.
         """
-        raise NotImplementedError()
+        try:
+            with open(self.file_path, "r") as file:
+                self._data = file.read()
+        except FileNotFoundError as e:
+            err_msg = f"The file {self.file_path} does not exist."
+            logger.fatal(err_msg)
+            raise FileNotFoundError(err_msg)
+        except IOError as e:
+            err_msg = f"IO Error while trying to open file from path {self.file_path}"
+            logger.fatal(err_msg)
+            raise FileNotFoundError(err_msg)
+        except Exception as e:
+            err_msg = f"An error occurred: {e}"
+            logger.fatal(err_msg)
+            raise e
