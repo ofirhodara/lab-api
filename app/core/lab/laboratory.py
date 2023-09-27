@@ -1,4 +1,5 @@
 import importlib
+import uuid
 from typing import List, Dict, Generic
 
 from pydantic import BaseModel
@@ -8,6 +9,7 @@ from app.core.lab.items import Port, Card, Component, LabDataItem
 from app.managers.logger_manager import create_logger
 
 logger = create_logger(__name__)
+
 
 class Laboratory(LabDataItem):
     """Represents a laboratory with components, cards, and ports.
@@ -30,9 +32,27 @@ class Laboratory(LabDataItem):
         "Card": Card,
         "Port": Port
     }
-    component: List[Component]
+    components: List[Component]
     cards: List[Card]
     ports: List[Port]
+
+    @staticmethod
+    def _filter_by_guid(objects: List[BaseModel], guid: uuid.UUID):
+        return list(filter(lambda obj: str(obj.component_id) == str(guid), objects))
+
+    def get_cards_by_comp_id(self, guid: uuid.UUID):
+        return self._filter_by_guid(self.cards, guid)
+
+    def get_ports_by_comp_id(self, guid: uuid.UUID):
+        return self._filter_by_guid(self.ports, guid)
+
+    def get_all_items_by_comp_id(self, guid: uuid.UUID) -> List[LabDataItem]:
+        comp = self._filter_by_guid(self.components, guid)
+        if len(comp) == 0:
+            logger.info(f"Didn't find any component with guid {guid}")
+            return
+
+        return comp + self.get_ports_by_comp_id(guid) + self.get_ports_by_comp_id(guid)
 
     @staticmethod
     def get_lab_class_by_name(class_name: str) -> Ok[BaseModel] | Err[str]:

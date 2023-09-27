@@ -32,7 +32,7 @@ class ConfigurationManager:
 
     _instance = None
 
-    def __new__(cls, config_file: Path):
+    def __new__(cls, config_file: Path = None):
         """
         Create a new instance of ConfigurationManager.
 
@@ -58,7 +58,7 @@ class ConfigurationManager:
             ConfigurationManager: The existing instance of ConfigurationManager.
         """
         if cls._instance is None:
-            raise ValueError("ConfigurationManager instance has not been created yet.")
+            return ConfigurationManager()
         return cls._instance
 
     @staticmethod

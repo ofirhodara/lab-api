@@ -16,11 +16,22 @@ from app.core.serializer_methods.serializer import IBaseSerializer
 class YamlSerializer(IBaseSerializer):
     """
     YamlSerializer class implements the IBaseSerializer interface for parsing YAML data into LabDataItem objects.
+    for example the yaml will look like:
+
+
+
     """
 
     def serialize(self, data: Any, target_class: LabDataItem):
         """
         Parses YAML data and creates an instance of the target class.
+        the yaml file will look like this in order to work with my infrastructure
+        deserializable_objects:
+          port:
+          - port_one:
+              name: ofir
+              age: 4
+          - port_two: and so on..
 
         Args:
             data (Any): YAML data to be parsed.
@@ -29,11 +40,8 @@ class YamlSerializer(IBaseSerializer):
         Returns:
             LabDataItem: An instance of the target_class with attributes set from the parsed data.
         """
-        parsed_data = yaml.safe_load(data)
-        instance = target_class()
-        for key, value in parsed_data.items():
-            setattr(instance, key, value)
-        return instance
+
+        ...
 
 
 class CsvSerializer(IBaseSerializer):
@@ -61,5 +69,4 @@ class CsvSerializer(IBaseSerializer):
                 setattr(instance, key, value)
 
             instance_list.append(instance)
-        print(instance_list)
         return instance_list
